@@ -1,8 +1,11 @@
---Task2 pig script
+--Task3 pig script
+
 --Register the piggybank jar
 REGISTER /usr/local/pig/lib/piggybank.jar
+
 --define the CSVExcel sheet
 DEFINE CSVExcelStorage org.apache.pig.piggybank.storage.CSVExcelStorage;
+
 --load the data into the pig relation
 load_data = LOAD '/flume_import/' USING CSVExcelStorage(',','NO_MULTILINE','UNIX','SKIP_INPUT_HEADER');
 
@@ -11,4 +14,5 @@ GenerateRecord = FOREACH load_data GENERATE (chararray)$7 AS companyName, (int)$
 GroupRecord = GROUP GenerateRecord BY companyName; 
 
 Result = FOREACH GroupRecord GENERATE group AS companyName, COUNT(GenerateRecord.complainID) AS complaintCount; 
+
 STORE Result INTO '/user/acadgild/project/Task3output'; 
